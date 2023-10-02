@@ -8,7 +8,7 @@
 
 em {
     font-style: normal !important;
-    text-decoration: underline #9558b2 dashed 5px;
+    text-decoration: underline #9558b2 solid 3px;
 }
 
 i:not(.fas):not(.fa-circle) {
@@ -52,6 +52,10 @@ i:not(.fas):not(.fa-circle) {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+.reveal .r-stack .fragment:first-child {
+    margin: 0;
 }
 
 /* Menu */

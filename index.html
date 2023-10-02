@@ -4,31 +4,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>MAT8186 &mdash; Cours 6</title>
+    <title>MAT8186 &mdash; Cours 7</title>
 
     <link rel="stylesheet" href="dist/reset.css">
     <link rel="stylesheet" href="dist/reveal.css">
     <link rel="stylesheet" href="dist/theme/mytheme.css" id="theme">
 
     <style>
-      #test-types dt {
-          flex-basis: 30%;
+      /* 2 columns layout */
+      .column2 {
+          float: left;
+          width: 50%;
       }
 
-      #test-types dd {
-          flex-basis: 70%;
+      .column2:after {
+          content: "" !important;
       }
 
-      #expectations-list {
-          font-size: 30px;
-      }
-
-      #expectations-list dt {
-          flex-basis: 40%;
-      }
-
-      #expectations-list dd {
-          flex-basis: 60%;
+      .row:after {
+          content: "";
+          display: table;
+          clear: both;
       }
     </style>
   </head>
@@ -36,181 +32,334 @@
     <div class="reveal">
       <div class="slides">
         <section class="cover">
-          <h1>Cours 6 &mdash; Tests</h1>
+          <h1>Cours 7 &mdash; Programmation concurrente &amp; calcul distribué</h1>
           <h2>Patrick Fournier</h2>
           <h3>MAT8186 &mdash; Techniques avancées en programmation statistiques R</h3>
           <h3>Automne 2023</h3>
         </section>
         <section>
           <section class="title-slide">
-            <h1>Tests formels</h1>
+            <h1>Programmation concurrente</h1>
           </section>
           <section>
-            <h1>Definitions</h1>
-            <ul style="font-size:35px;">
-              <li>Vérification qu'un logiciel fait ce qu'il doit faire</li>
-              <li class="no-after">Plusieurs types (<a href="https://www.ibm.com/topics/software-testing">source</a>)
-                <dl id="test-types">
-                  <dt>Acceptation</dt><dd>logiciel répond aux exigences</dd>
-                  <dt>Régression</dt><dd>nouvelle fonctionnalité dégrade une ancienne</dd>
-                  <dt>Utilisabilité</dt><dd>facilité d'utilisation du logiciel</dd>
-                  <dt>Performance</dt><dd>performance du logiciel sous conditions réelles</dd>
-                  <dt class="fragment highlight-red grow">Unitaire</dt>
-                  <dd>partie du logiciel</dd>
-                </dl>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <h1>Tests formels</h1>
+            <h1>Généralités</h1>
             <ul>
-              <li>Test informel: expérimentation dans le REPL par exemple.</li>
-              <li>Simple &amp; rapide &#x1f600;, mais ne laisse pas de trace &#9785;&#xfe0f;</li>
-              <li>Solution: <em>automatiser</em> les tests</li>
-              <li>Penser aux cas problématiques lorsqu'on code</li>
-              <li>Créer tests à partir de bugs</li>
-            </ul>
-
-            <aside class="notes">
+              <li>Objectif: gains en performance</li>
+              <li class="column">Approches possibles</li>
               <ul>
-                <li>Comme pas de trace, facile à oublier lorsque l'on
-                  revient travailler sur le code dans le futur</li>
-                <li>Transformer un bug en test permet de rendre la correction du bug concret et de le tester systématiquement dans le futur</li>
+                <li>Améliorer algorithme</li>
+                <li>Améliorer implémentation</li>
+                <li>Améliorer hardware</li>
+                <li class="fragment grow">Paralléliser</li>
               </ul>
-            </aside>
+            </ul>
+          </section>
+          <section>
+            <h1>Limitations</h1>
+            <ul>
+              <li class="column">Parallélisation &rArr; opérations supplémentaires</li>
+              <ul>
+                <li>Ordonnancement (scheduling)</li>
+                <li class="semicolumn">Communication inter-processus (IPC)</li>
+              </ul>
+              <li>&exist; # processus optimal</li>
+              <ul>
+                <li>Dépend du problème, algorithme, implémentation, environnement...</li>
+              </ul>
+            </ul>
           </section>
           <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Coût-bénéfices</h1>
+                <h1>Type de parallélisme</h1>
                 <ul>
-                  <li>Tests formels demandent plus d'efforts &#x1f3cb;</li>
-                  <li>Bugs sont <em>très couteux</em> en temps et en argent</li>
+                  <li class="column">Mémoire partagée</li>
+                  <ul>
+                    <li class="semicolumn">Toutes les unités de calcul (<em>cores</em>) partagent la même mémoire</li>
+                  </ul>
+                  <li class="column">Mémoire distribuée</li>
+                  <ul>
+                    <li>Noeud (<em>node</em>): ensemble cores/mémoire</li>
+                    <li>Chaque node possède une copie des données</li>
+                  </ul>
                 </ul>
               </div>
 
               <div class="fragment fade-in obox" data-fragment-index="2">
-                <iframe data-autoplay width="1067" height="600" data-src="https://www.youtube.com/embed/ReAcaANkArY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <h2>Exemple: Mémoire partagée</h2>
+                <img style="display:block; margin:auto;"
+                     src="assets/shared-memory.svg"
+                     alt="Mémoire partagée"/>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="3">
+                <h2>Exemple: Mémoire distribuée</h2>
+                <img style="display:block; margin:auto;"
+                     src="assets/distributed-memory.svg"
+                     alt="Mémoire distribuée"/>
+              </div>
+            </div>
+          </section>
+          <section>
+            <div class="r-stack">
+              <div class="fragment semi-fade-out" data-fragment-index="2">
+                <h1>Communication inter-processus (IPC)</h1>
+                <ul>
+                  <li>&nearr; # processus &rArr; &nearr; puissance de calcul &#x1F600;</li>
+                  <li>&nearr; # processus &rArr; &nearr; communications &#x1F625;</li>
+                  <li>Souvent, principale source de <em>ralentissement dù au parallélisme</em></li>
+                  <ul>
+                    <li class="semicolumn">Plus prononcé lorsque la mémoire est distribuée</li>
+                  </ul>
+                  <li>Solution: optimiser la <em>topologie</em></li>
+                </ul>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <div class="fragment semi-fade-out" data-fragment-index="3">
+                  <h2>Exemple: Manager/Workers</h2>
+                  <p>&hArr; Graphe <em>biparti</em>.</p>
+                  <img style="display:block; margin:auto;"
+                       src="assets/manager-workers.svg"
+                       alt="Managers/workers"/>
+                </div>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="3">
+                <div class="fragment semi-fade-out" data-fragment-index="4">
+                  <h2>Exemple: Fully Connected</h2>
+                  <p>&hArr; Graphe <em>complet</em>.</p>
+                  <img style="display:block; margin:auto;"
+                       src="assets/fully-connected.svg"
+                       alt="Fully connected"/>
+                </div>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="4">
+                <h2>Exemple: Ring</h2>
+                <p>&hArr; <em>Cycle</em>.</p>
+                <img style="display:block; margin:auto;"
+                     src="assets/ring.svg"
+                     alt="Ring topology"/>
               </div>
             </div>
           </section>
         </section>
+
         <section>
           <section class="title-slide">
-            <h1>Test unitaires avec R</h1>
+            <h1>R &amp; MPI</h1>
+          </section>
+
+          <section>
+            <h1>Paraléllisme en R</h1>
+            <ul>
+              <li><a href=https://cran.r-project.org/web/views/HighPerformanceComputing.html>Plusieurs options</a></li>
+              <li>Package important: <a href="https://cran.r-project.org/web/packages/snow/">snow</a></li>
+              <li>Pour le calcul distribué (pas seulement sur R): MPI</li>
+              <ul>
+                <li>Wrapper R: <a href="https://cran.r-project.org/web/packages/Rmpi/index.html">Rmpi</a></li>
+              </ul>
+              <li>Rmpi &#x1F91D;&#x1F3FD; snow</li>
+            </ul>
           </section>
           <section>
-            <h1>Testthat</h1>
+            <h1>Terminologie</h1>
             <ul>
-              <li>Possible d&apos;implémenter les tests dans un simple script</li>
-              <li>Plus facile d'utiliser un package dédié: <a href="https://testthat.r-lib.org/">Testthat</a></li>
-              <li>Recommandé d'utiliser la <em>troisième édition</em></li>
-              <li>S'intègre parfaitement au workflow vu précédemment pour la création d'un package</li>
+              <li>Rank: id du processus</li>
+              <li>Master: manager, rang 0</li>
+              <li>Slave: worker, rang = 1, 2, etc.</li>
+              <li>Comm: canal de communication, 1, 2, etc</li>
             </ul>
-
-            <pre><code class="language-R hljs" data-trim data-noescape>
-                <span class="hljs-repl">r$&gt;</span> usethis::use_testthat(3)
-            </code></pre>
-
-            <aside class="notes">
-              <ul>
-                <li>Le 3 dans<code class="language-R hljs">usethis::testthat(3)</code> spécifie qu'on désire utiliser la troisième édition</li>
-                <li><code class="language-R hljs">usethis::use_testthat</code> ajoute testthat aux packages suggérés</li>
-              </ul>
-            </aside>
           </section>
           <section>
-            <h1>Création de tests</h1>
+            <h1>Commandes essentielles</h1>
             <ul>
-              <li>Quelques conventions à respecter pour emplacement/nom fichiers tests</li>
-              <li>Le plus simple: créer les fichiers avec <code class="language-R hljs">usethis::use_test("nom")</code></li>
-              <li>Plus simple si chaque &laquo;nom&raquo; correspond à un fichier dans <code class="language-Bash hljs">R/</code></li>
+              <li>Créer les workers: <code class="language-R hljs">mpi.spawn.Rslaves</code></li>
+              <li>Détruire les workers: <code class="language-R hljs">mpi.close.Rslaves</code></li>
+              <li>Quitter: <code class="language-R hljs">mpi.finalize</code>, <code class="language-R hljs">mpi.quit</code></li>
+              <li>Faire exécuter une commande à tous les workers: <code class="language-R hljs">mpi.bcast.cmd</code> ou <code class="language-R hljs">mpi.remote.exec</code></li>
+              <li>Obtenir le rang d'un worker: <code class="language-R hljs">mpi.comm.rank</code></li>
+              <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-basic-r">basic.R</a></li>
             </ul>
-
-            <aside class="notes">
-              <ul>
-                <li>Exemple avec <code class="language-Bash hljs">multiplication</code> de exemple-package</li>
-              </ul>
-            </aside>
           </section>
           <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Structure d'un fichier test</h1>
+                <h1>Communication point-to-point</h1>
                 <ul>
-                  <li>Script R \( \Rightarrow \) peut contenir tout code R valide</li>
-                  <li>Peu utile si rien n'est testé</li>
-                  <li>Fonction principale: <code class="language-R hljs">testthat::test_that</code></li>
-                  <li class="no-after">Prend exactement 2 arguments:
-                    <ol>
-                      <li><code class="language-R hljs">desc</code>: description du test</li>
-                      <li><code class="language-R hljs">code</code>: code effectuant le test</li>
-                    </ol>
-                  </li>
+                  <li>MPI: <em>M</em>essage <em>P</em>assing <em>I</em>nterface</li>
+                  <li class="column">Opérations de base</li>
+                  <ul>
+                    <li>Envoyer un message: <code class="language-R hljs">mpi.send</code></li>
+                    <li class="semicolumn">Recevoir un message: <code class="language-R hljs">mpi.recv</code></li>
+                  </ul>
+                  <li class="column">Arguments obligatoires</li>
+                  <ul>
+                    <li><code class="language-R hljs">x</code>, <code class="language-R hljs">type</code>, <code class="language-R hljs">dest/source</code>, <code class="language-R hljs">tag</code></li>
+                  </ul>
+                  <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></li>
                 </ul>
               </div>
 
               <div class="fragment fade-in obox" data-fragment-index="2">
-                <pre><code class="language-R hljs" data-trim data-noescape>
-                    test_that("multiplication works", {
-                        expect_equal(2 * 2, 4)
-                    })
-                </code></pre>
+                <h2>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></h2>
+                <div class="r-stack">
+                  <div class="fragment fade-out" data-fragment-index="3">
+                    <img src="assets/exemple1-0.svg" alt="Exemple1 -- 0" height="500" />
+                  </div>
+                  <div class="fragment fade-in" data-fragment-index="3">
+                    <div class="fragment fade-out" data-fragment-index="4">
+                      <img src="assets/exemple1-1.svg" alt="Exemple1 -- 1" height="500"/>
+                    </div>
+                  </div>
+                  <div class="fragment fade-in" data-fragment-index="4">
+                    <div class="fragment fade-out" data-fragment-index="5">
+                      <img src="assets/exemple1-2.svg" alt="Exemple1 -- 2" height="500"/>
+                    </div>
+                  </div>
+                  <div class="fragment fade-in" data-fragment-index="5">
+                    <img src="assets/exemple1-3.svg" alt="Exemple1 -- 3" height="500"/>
+                  </div>
+                </div class="r-stack">
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div class="r-stack">
+              <div class="fragment semi-fade-out" data-fragment-index="2">
+                <h1>Communication blocante vs. non blocante</h1>
+                <ul>
+                  <li>Comm. blocante: attend la fin de la communication avant de retourner</li>
+                  <li>Comm. non blocante: retourne immédiatement!</li>
+                  <li><code class="language-R hljs">mpi.isend</code>, <code class="language-R hljs">mpi.irecv</code></li>
+                  <li>Comm non blocante &gt; blocante</li>
+                  <li>Risque de <em>deadlock</em></li>
+                  <li class="questionmark">Comm. non-blocantes dans <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></li>
+                </ul>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <h2>Exercice</h2>
+                <ul>
+                  <li>Chaque worker recoit un entier de 1 à \( n \) différent</li>
+                  <li>Il exécute la fonction <a href="https://gist.github.com/ps-pat/7b2472679ee043c92751390570151ccc#file-fonctions-r"><code class="language-R hljs">dist0</code></a> avec \( m \) vallant cet entier</li>
+                  <li>Le vecteur retourné est envoyé au manager qui les concatène</li>
+                  <li>Le manager affiche le résultat</li>
+                </ul>
               </div>
             </div>
           </section>
           <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Expectations</h1>
+                <h1>Communication collective</h1>
                 <ul>
-                  <li>Plusieurs manières de concevoir des tests</li>
-                  <li>Attentes &#x1f91d;&#x1f3fd; réalité</li>
-                  <li>Testthat: fonctions <code class="language-R hljs">expect_<...>()</code></li>
-                  <li><a href="https://testthat.r-lib.org/reference/">Liste exhaustive</a></li>
-                  <li>En résumé: expectations \( \in \) tests \( \in \) fichiers</li>
+                  <li>Exemple déjà vu: <code class="language-R hljs">mpi.bcast.cmd</code></li>
+                  <li>Même effet que <code class="language-R hljs">mpi.send</code> à tous les workers</li>
+                  <li>Diviser une liste entre les workers: <code class="language-R hljs">mpi.scatter.Robj2slave</code></li>
+                  <li>Rassembler le résultat: <code class="language-R hljs">mpi.gather.Robj</code></li>
+                  <ul>
+                    <li class="semicolumn">À appeller par <em>chaque worker</em> en plus du <em>manager</em></li>
+                  </ul>
+                  <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-dist_scale-r">dist_scale.R</a></li>
                 </ul>
               </div>
 
               <div class="fragment fade-in obox" data-fragment-index="2">
-                Expectations courrantes:
-                <dl id="expectations-list">
-                  <dt><code class="language-R hljs">expect_equal</code></dt><dd>égalité</dd>
-                  <dt><code class="language-R hljs">expect_identical</code></dt><dd>identité</dd>
-                  <dt><code class="language-R hljs">expect_error</code></dt><dd>erreur</dd>
-                  <dt><code class="language-R hljs">expect_warning</code></dt><dd>avertissement</dd>
-                  <dt><code class="language-R hljs">expect_type</code></dt><dd><code class="language-R hljs">typeof(x)</code></dd>
-                  <dt><code class="language-R hljs">expect_s3_class</code></dt><dd>objet S3 hérite d'une classe (ou pas S3 si <code class="language-R hljs">NA</code>)</dd>
-                  <dt><code class="language-R hljs">expect_length</code></dt><dd>longueur d'un vecteur</dd>
-                  <dt><code class="language-R hljs">expect_true</code></dt><dd>argument est <code class="language-R hljs">TRUE</code></dd>
-                </dl>
+                <div class="fragment semi-fade-out" data-fragment-index="5">
+                  <h2>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-dist_scale-r">dist_scale.R</a></h2>
+                  <div class="r-stack">
+                    <div class="fragment fade-out" data-fragment-index="3">
+                      <img src="assets/dist_scale-0.svg" alt="dist_scale -- 0" height="500" />
+                    </div>
+                    <div class="fragment fade-in" data-fragment-index="3">
+                      <div class="fragment fade-out" data-fragment-index="4">
+                        <img src="assets/dist_scale-1.svg" alt="dist_scale -- 1" height="500"/>
+                      </div>
+                    </div>
+                    <div class="fragment fade-in" data-fragment-index="4">
+                      <img src="assets/dist_scale-2.svg" alt="dist_scale -- 2" height="500"/>
+                    </div>
+                  </div>
+                </div class="r-stack">
               </div>
             </div>
-
-            <aside class="notes">
+            <div class="fragment fade-in obox" data-fragment-index="5">
+              <h2>Exercice</h2>
               <ul>
-                <li><code class="language-R hljs">expect_equal</code> et <code class="language-R hljs">expect_identical</code> utilisent <code class="language-R hljs">waldo::compare</code></li>
-                <li><code class="language-R hljs">expect_true</code> vient avec <code class="language-R hljs">expect_false</code></li>
-                <li><code class="language-R hljs">expect_lte</code> vient avec les autres variantes</li>
+                <li>Calculez \( \pi \) en utilisant l'identité \( \pi = \int_0^1 \frac{4}{1 + x^2} \)</li>
+                <li>Utilisez \( m \) workers</li>
+                <li>Divisez \( [0, 1] \) en \( n \times m \) parties</li>
+                <li>Chaque worker calcule sa partie de la somme de Riemann</li>
+                <li>Le manager combine le tout et affiche le résultat</li>
               </ul>
-            </aside>
+            </div>
           </section>
           <section>
-            <h1>Trucs et remarques</h1>
-            <ul>
-              <li>Un <code class="language-R hljs">test_that</code> peut contenir plusieurs expectations</li>
-              <li>Devrait tester un ensemble de fonctionnalités reliés</li>
-              <li>Un fichier peut contenir plusieurs <code class="language-R hljs">test_that</code></li>
-              <li>Possible d'utiliser du code hors <code class="language-R hljs">test_that</code> dans les tests</li>
-            </ul>
+            <div class="r-stack">
+              <div class="fragment semi-fade-out" data-fragment-index="2">
+                <h1>Embarassingly parallel problems</h1>
+                <ul>
+                  <li>&empty; communication entre les workers &rArr; parallélisation facile</li>
+                  <li>En R: <code class="language-R hljs">lapply</code> &amp; cie</li>
+                </ul>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <h2>Exemples</h2>
+                <div class="row">
+                  <div class="column2">
+                    <ul>
+                      <li>Intégration numérique</li>
+                      <li>Échantillonage préférentiel</li>
+                      <li class="semicolumn">Transformée de Fourier</li>
+                    </ul>
+                  </div>
+                  <div class="column2">
+                    <ul>
+                      <li>Études de simulation</li>
+                      <li>Algorithmes génétiques</li>
+                      <li>Forêts aléatoires</li>
+                      <li>Force brute</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
           <section>
-            <h1>Snapshot testing</h1>
-            <ul>
-              <li>Parfois, résultat d'un test trop compliqué pour être spécifié correctement</li>
-              <li>Exemple: tout ce qui est  aléatoire &#x1f62d;</li>
-              <li>Solution: enregistrer le résultat dans un fichier et vérifier &laquo;à la main&raquo;</li>
-            </ul>
+            <div class="r-stack">
+              <div class="fragment semi-fade-out" data-fragment-index="2">
+                <h1>Snow et Rmpi</h1>
+                <ul>
+                  <li><em>S</em>imple <em>n</em>etwork <em>o</em>f <em>w</em>orkstations</li>
+                  <li class="column">Types de clusters</li>
+                  <ul>
+                    <li>SOCK</li>
+                    <li class="semicolumn">MPI</li>
+                  </ul>
+                  <li>Défaut: MPI si possible, SOCK sinon</li>
+                  <ul>
+                    <li class="semicolumn">MPI &harr; Rmpi disponible</li>
+                  </ul>
+                  <li><code class="language-R hljs">cl <- makeCluster(n)</code> et laisser Snow décider</li>
+                </ul>
+              </div>
+
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <h2>Fonctions importantes</h2>
+                <ul>
+                  <li><code class="language-R hljs">parLapply</code>: comme vous pensez</li>
+                  <ul>
+                    <li class="semicolumn">Variantes existent</li>
+                  </ul>
+                  <li><code class="language-R hljs">clusterCall</code>: appelle une fonction</li>
+                  <li><code class="language-R hljs">clusterExport</code>: définit des variables</li>
+                </ul>
+              </div>
+            </div>
           </section>
         </section>
       </div>
@@ -236,7 +385,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="dist/perso.js"></script>
-    <script type="text/javascript">qrcode.makeCode("https://www.patrickfournier.ca/mat8186-cours6");</script>
+    <script type="text/javascript">qrcode.makeCode("https://www.patrickfournier.ca/mat8186-cours7");</script>
     <script>
       // More info about initialization & config:
       // - https://revealjs.com/initialization/
