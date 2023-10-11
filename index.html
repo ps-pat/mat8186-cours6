@@ -26,6 +26,10 @@
           display: table;
           clear: both;
       }
+
+      #dist-scale-animation img {
+          max-width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -251,6 +255,7 @@
               </div>
             </div>
           </section>
+
           <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
@@ -270,7 +275,7 @@
               <div class="fragment fade-in obox" data-fragment-index="2">
                 <div class="fragment semi-fade-out" data-fragment-index="5">
                   <h2>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-dist_scale-r">dist_scale.R</a></h2>
-                  <div class="r-stack">
+                  <div class="r-stack" id="dist-scale-animation">
                     <div class="fragment fade-out" data-fragment-index="3">
                       <img src="assets/dist_scale-0.svg" alt="dist_scale -- 0" height="500" />
                     </div>

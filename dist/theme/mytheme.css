@@ -412,6 +412,10 @@ i:not(.fas):not(.fa-circle) {
   margin: 0;
 }
 
+.reveal .r-stack .fragment .fragment {
+  margin: auto;
+}
+
 /* Menu */
 .reveal .slide-menu-button {
   top: 30px;
