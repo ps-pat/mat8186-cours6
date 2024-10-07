@@ -39,7 +39,7 @@
           <h1>Cours 7 &mdash; Programmation concurrente &amp; calcul distribué</h1>
           <h2>Patrick Fournier</h2>
           <h3>MAT8186 &mdash; Techniques avancées en programmation statistiques R</h3>
-          <h3>Automne 2023</h3>
+          <h3>Automne 2024</h3>
         </section>
         <section>
           <section class="title-slide">
@@ -92,15 +92,15 @@
               <div class="fragment fade-in obox" data-fragment-index="2">
                 <h2>Exemple: Mémoire partagée</h2>
                 <img style="display:block; margin:auto;"
-                     src="assets/shared-memory.svg"
-                     alt="Mémoire partagée"/>
+                  src="assets/shared-memory.svg"
+                  alt="Mémoire partagée"/>
               </div>
 
               <div class="fragment fade-in obox" data-fragment-index="3">
                 <h2>Exemple: Mémoire distribuée</h2>
                 <img style="display:block; margin:auto;"
-                     src="assets/distributed-memory.svg"
-                     alt="Mémoire distribuée"/>
+                  src="assets/distributed-memory.svg"
+                  alt="Mémoire distribuée"/>
               </div>
             </div>
           </section>
@@ -124,8 +124,8 @@
                   <h2>Exemple: Manager/Workers</h2>
                   <p>&hArr; Graphe <em>biparti</em>.</p>
                   <img style="display:block; margin:auto;"
-                       src="assets/manager-workers.svg"
-                       alt="Managers/workers"/>
+                    src="assets/manager-workers.svg"
+                    alt="Managers/workers"/>
                 </div>
               </div>
 
@@ -134,8 +134,8 @@
                   <h2>Exemple: Fully Connected</h2>
                   <p>&hArr; Graphe <em>complet</em>.</p>
                   <img style="display:block; margin:auto;"
-                       src="assets/fully-connected.svg"
-                       alt="Fully connected"/>
+                    src="assets/fully-connected.svg"
+                    alt="Fully connected"/>
                 </div>
               </div>
 
@@ -143,230 +143,268 @@
                 <h2>Exemple: Ring</h2>
                 <p>&hArr; <em>Cycle</em>.</p>
                 <img style="display:block; margin:auto;"
-                     src="assets/ring.svg"
-                     alt="Ring topology"/>
+                  src="assets/ring.svg"
+                  alt="Ring topology"/>
               </div>
             </div>
-          </section>
-        </section>
-
-        <section>
-          <section class="title-slide">
-            <h1>R &amp; MPI</h1>
-          </section>
-
-          <section>
-            <h1>Paraléllisme en R</h1>
-            <ul>
-              <li><a href=https://cran.r-project.org/web/views/HighPerformanceComputing.html>Plusieurs options</a></li>
-              <li>Package important: <a href="https://cran.r-project.org/web/packages/snow/">snow</a></li>
-              <li>Pour le calcul distribué (pas seulement sur R): MPI</li>
-              <ul>
-                <li>Wrapper R: <a href="https://cran.r-project.org/web/packages/Rmpi/index.html">Rmpi</a></li>
-              </ul>
-              <li>Rmpi &#x1F91D;&#x1F3FD; snow</li>
-            </ul>
-          </section>
-          <section>
-            <h1>Terminologie</h1>
-            <ul>
-              <li>Rank: id du processus</li>
-              <li>Master: manager, rang 0</li>
-              <li>Slave: worker, rang = 1, 2, etc.</li>
-              <li>Comm: canal de communication, 1, 2, etc</li>
-            </ul>
-          </section>
-          <section>
-            <h1>Commandes essentielles</h1>
-            <ul>
-              <li>Créer les workers: <code class="language-R hljs">mpi.spawn.Rslaves</code></li>
-              <li>Détruire les workers: <code class="language-R hljs">mpi.close.Rslaves</code></li>
-              <li>Quitter: <code class="language-R hljs">mpi.finalize</code>, <code class="language-R hljs">mpi.quit</code></li>
-              <li>Faire exécuter une commande à tous les workers: <code class="language-R hljs">mpi.bcast.cmd</code> ou <code class="language-R hljs">mpi.remote.exec</code></li>
-              <li>Obtenir le rang d'un worker: <code class="language-R hljs">mpi.comm.rank</code></li>
-              <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-basic-r">basic.R</a></li>
-            </ul>
           </section>
           <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Communication point-to-point</h1>
+                <h1>Le dîner des philosophes</h1>
                 <ul>
-                  <li>MPI: <em>M</em>essage <em>P</em>assing <em>I</em>nterface</li>
-                  <li class="column">Opérations de base</li>
+                  <li>Dijkstra</li>
+                  <li>Philosophe: 2 actions: <em>penser</em> et <em>manger</em>.</li>
+                  <li>Appétit et nourriture infinis</li>
+                  <li>2 baguettes pour manger</li>
+                  <li>N'a accès qu'aux baguettes lui étant adjacentes</li>
+                </ul>
+              </div>
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <h2>Philosophes vertueux</h2>
+                <img style="display:block; margin: auto; height: 500px;"
+                  src="assets/philosophes.png"
+                  alt="Philosophes"/>
+                $\#$ baguettes $= 2 \times \#$ philosophes
+              </div>
+              <div class="fragment fade-in obox" data-fragment-index="3">
+                <h2>Philosophes vicieux</h2>
+                <img style="display:block; margin: auto; height: 500px;"
+                  src="assets/philosophes_vicieux.png"
+                  alt="Philosophes"/>
+                $\#$ baguettes $= \#$ philosophes
+              </div>
+              <div class="fragment fade-in obox" data-fragment-index="4">
+                <h2>Solution naïve</h2>
+                <ol>
+                  <li>Penser jusqu'à ce que baguette gauche disponible puis la prendre</li>
+                  <li>Penser jusqu'à ce que baguette droite disponible puis la prendre</li>
+                  <li>Manger $s$ secondes</li>
+                  <li>Déposer baguettes</li>
+                  <li>Répéter</li>
+                </ol>
+                <div class="fragment fade-in obox" data-fragment-index="5">
+                  <h2>Résultat</h2>
                   <ul>
-                    <li>Envoyer un message: <code class="language-R hljs">mpi.send</code></li>
-                    <li class="semicolumn">Recevoir un message: <code class="language-R hljs">mpi.recv</code></li>
+                    <li>Tous les philosophes prennent la baguette à leur gauche en même temps</li>
+                    <li>Baguette gauche de l'un $\Leftrightarrow$ baguette droite de l'autre</li>
+                    <li>Comdamnés à penser jusqu'à la mort</li>
+                    <li><em>Deadlock</em></li>
                   </ul>
-                  <li class="column">Arguments obligatoires</li>
-                  <ul>
-                    <li><code class="language-R hljs">x</code>, <code class="language-R hljs">type</code>, <code class="language-R hljs">dest/source</code>, <code class="language-R hljs">tag</code></li>
-                  </ul>
-                  <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></li>
-                </ul>
-              </div>
-
-              <div class="fragment fade-in obox" data-fragment-index="2">
-                <h2>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></h2>
-                <div class="r-stack">
-                  <div class="fragment fade-out" data-fragment-index="3">
-                    <img src="assets/exemple1-0.svg" alt="Exemple1 -- 0" height="500" />
-                  </div>
-                  <div class="fragment fade-in" data-fragment-index="3">
-                    <div class="fragment fade-out" data-fragment-index="4">
-                      <img src="assets/exemple1-1.svg" alt="Exemple1 -- 1" height="500"/>
-                    </div>
-                  </div>
-                  <div class="fragment fade-in" data-fragment-index="4">
-                    <div class="fragment fade-out" data-fragment-index="5">
-                      <img src="assets/exemple1-2.svg" alt="Exemple1 -- 2" height="500"/>
-                    </div>
-                  </div>
-                  <div class="fragment fade-in" data-fragment-index="5">
-                    <img src="assets/exemple1-3.svg" alt="Exemple1 -- 3" height="500"/>
-                  </div>
-                </div class="r-stack">
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <div class="r-stack">
-              <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Communication blocante vs. non blocante</h1>
-                <ul>
-                  <li>Comm. blocante: attend la fin de la communication avant de retourner</li>
-                  <li>Comm. non blocante: retourne immédiatement!</li>
-                  <li><code class="language-R hljs">mpi.isend</code>, <code class="language-R hljs">mpi.irecv</code></li>
-                  <li>Comm non blocante &gt; blocante</li>
-                  <li>Risque de <em>deadlock</em></li>
-                  <li class="questionmark">Comm. non-blocantes dans <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-ring_add-r">ring_add.R</a></li>
-                </ul>
-              </div>
-
-              <div class="fragment fade-in obox" data-fragment-index="2">
-                <h2>Exercice</h2>
-                <ul>
-                  <li>Chaque worker recoit un entier de 1 à \( n \) différent</li>
-                  <li>Il exécute la fonction <a href="https://gist.github.com/ps-pat/7b2472679ee043c92751390570151ccc#file-fonctions-r"><code class="language-R hljs">dist0</code></a> avec \( m \) vallant cet entier</li>
-                  <li>Le vecteur retourné est envoyé au manager qui les concatène</li>
-                  <li>Le manager affiche le résultat</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          <section>
-            <div class="r-stack">
-              <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Communication collective</h1>
-                <ul>
-                  <li>Exemple déjà vu: <code class="language-R hljs">mpi.bcast.cmd</code></li>
-                  <li>Même effet que <code class="language-R hljs">mpi.send</code> à tous les workers</li>
-                  <li>Diviser une liste entre les workers: <code class="language-R hljs">mpi.scatter.Robj2slave</code></li>
-                  <li>Rassembler le résultat: <code class="language-R hljs">mpi.gather.Robj</code></li>
-                  <ul>
-                    <li class="semicolumn">À appeller par <em>chaque worker</em> en plus du <em>manager</em></li>
-                  </ul>
-                  <li>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-dist_scale-r">dist_scale.R</a></li>
-                </ul>
-              </div>
-
-              <div class="fragment fade-in obox" data-fragment-index="2">
-                <div class="fragment semi-fade-out" data-fragment-index="5">
-                  <h2>Exemple: <a href="https://gist.github.com/ps-pat/a6640f290e59e500e0eda5523669d25f#file-dist_scale-r">dist_scale.R</a></h2>
-                  <div class="r-stack" id="dist-scale-animation">
-                    <div class="fragment fade-out" data-fragment-index="3">
-                      <img src="assets/dist_scale-0.svg" alt="dist_scale -- 0" height="500" />
-                    </div>
-                    <div class="fragment fade-in" data-fragment-index="3">
-                      <div class="fragment fade-out" data-fragment-index="4">
-                        <img src="assets/dist_scale-1.svg" alt="dist_scale -- 1" height="500"/>
-                      </div>
-                    </div>
-                    <div class="fragment fade-in" data-fragment-index="4">
-                      <img src="assets/dist_scale-2.svg" alt="dist_scale -- 2" height="500"/>
-                    </div>
-                  </div>
-                </div class="r-stack">
-              </div>
-            </div>
-            <div class="fragment fade-in obox" data-fragment-index="5">
-              <h2>Exercice</h2>
-              <ul>
-                <li>Calculez \( \pi \) en utilisant l'identité \( \pi = \int_0^1 \frac{4}{1 + x^2} \)</li>
-                <li>Utilisez \( m \) workers</li>
-                <li>Divisez \( [0, 1] \) en \( n \times m \) parties</li>
-                <li>Chaque worker calcule sa partie de la somme de Riemann</li>
-                <li>Le manager combine le tout et affiche le résultat</li>
-              </ul>
-            </div>
-          </section>
-          <section>
-            <div class="r-stack">
-              <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Embarassingly parallel problems</h1>
-                <ul>
-                  <li>&empty; communication entre les workers &rArr; parallélisation facile</li>
-                  <li>En R: <code class="language-R hljs">lapply</code> &amp; cie</li>
-                </ul>
-              </div>
-
-              <div class="fragment fade-in obox" data-fragment-index="2">
-                <h2>Exemples</h2>
-                <div class="row">
-                  <div class="column2">
-                    <ul>
-                      <li>Intégration numérique</li>
-                      <li>Échantillonage préférentiel</li>
-                      <li class="semicolumn">Transformée de Fourier</li>
-                    </ul>
-                  </div>
-                  <div class="column2">
-                    <ul>
-                      <li>Études de simulation</li>
-                      <li>Algorithmes génétiques</li>
-                      <li>Forêts aléatoires</li>
-                      <li>Force brute</li>
-                    </ul>
-                  </div>
                 </div>
               </div>
             </div>
           </section>
           <section>
+            <h1>Problèmes classiques</h1>
+            <ul>
+              <li>Plusieurs travailleurs</li>
+              <li>Ressources <em>partagées</em></li>
+            </ul>
+            <p>Peut mener à</p>
+            <ul>
+              <li>Deadlock &#x1F363</li>
+              <li>Ressource starvation &#x1F4A3;</li>
+              <li>Race condition &#x1F3C3;</li>
+            </ul>
+          </section>
+          <section>
+            <h1>Deadlock</h1>
+            <p>$t_1, t_2$ des travailleurs</p>
+            <ul>
+              <li>$t_1$ veut travailler</li>
+              <ul>
+                <li>A besoin d'une ressource utilisée par $t_2$</li>
+                <li>$\Rightarrow t_1$ attend $t_2$</li>
+              </ul>
+              <li>$t_2$ veut travailler</li>
+              <ul>
+                <li>A besoin d'une ressource utilisée par $t_1$</li>
+                <li>$\Rightarrow t_2$ attend $t_1$</li>
+              </ul>
+            </ul>
+          </section>
+          <section>
             <div class="r-stack">
               <div class="fragment semi-fade-out" data-fragment-index="2">
-                <h1>Snow et Rmpi</h1>
+                <h1>Race condition</h1>
                 <ul>
-                  <li><em>S</em>imple <em>n</em>etwork <em>o</em>f <em>w</em>orkstations</li>
-                  <li class="column">Types de clusters</li>
+                  <li>Comportement dépend l'ordre d'exécution des instructions</li>
+                  <li>Ordre non contrôlé $\Rightarrow$ comportement imprévisible</li>
                   <ul>
-                    <li>SOCK</li>
-                    <li class="semicolumn">MPI</li>
+                    <li>Programmation concurrente $\Rightarrow$ pas de contrôle de l'ordre</li>
                   </ul>
-                  <li>Défaut: MPI si possible, SOCK sinon</li>
-                  <ul>
-                    <li class="semicolumn">MPI &harr; Rmpi disponible</li>
-                  </ul>
-                  <li><code class="language-R hljs">cl <- makeCluster(n)</code> et laisser Snow décider</li>
+                  <li>Opérations non associatives</li>
                 </ul>
               </div>
-
               <div class="fragment fade-in obox" data-fragment-index="2">
-                <h2>Fonctions importantes</h2>
-                <ul>
-                  <li><code class="language-R hljs">parLapply</code>: comme vous pensez</li>
-                  <ul>
-                    <li class="semicolumn">Variantes existent</li>
-                  </ul>
-                  <li><code class="language-R hljs">clusterCall</code>: appelle une fonction</li>
-                  <li><code class="language-R hljs">clusterExport</code>: définit des variables</li>
-                </ul>
+                <pre><code class="language-R hljs" data-trim data-noescape style="font-size:30px;">
+                  <span class="hljs-repl">r$&gt;</span> Reduce(`+`, sample(1:10))
+                  [1] 55
+
+                  <span class="hljs-repl">r$&gt;</span> Reduce(`+`, sample(1:10))
+                  [1] 55
+
+                  <span class="hljs-repl">r$&gt;</span> Reduce(`-`, sample(1:10))
+                  [1] -41
+
+                  <span class="hljs-repl">r$&gt;</span> Reduce(`-`, sample(1:10))
+                  [1] -45
+                </code></pre>
               </div>
             </div>
           </section>
+          <section>
+            <div class="r-stack">
+              <div class="fragment semi-fade-out" data-fragment-index="2">
+                <h1>Ressource starvation</h1>
+                <ul>
+                  <li>Travailleur n'a pas accès aux ressources nécessaires</li>
+                  <li>Toutes les ressources sont utilisées</li>
+                  <ul>
+                    <li>Ressources non libérées</li>
+                  </ul>
+                </ul>
+              </div>
+              <div class="fragment fade-in obox" data-fragment-index="2">
+                <h2>&#x1F4A3;</h2>
+                <pre><code class="language-R hljs" data-trim data-noescape style="font-size:30px; line-height:1.25;">
+                  f <- function(f) {
+                    ## Crée un cluser de 2 travailleurs.
+                    cl <- parallel::makeCluster(2)
+
+                    ## Expose `f` à chaque travailleur.
+                    parallel::clusterExport(cl, "f")
+
+                    ## Demande aux travailleurs d'exécuter `f(f)`.
+                    parallel::clusterCall(cl, f(f))
+                    }
+                </code></pre>
+            </div>
+          </div>
         </section>
+      </section>
+
+      <section>
+        <section class="title-slide">
+          <h1> Programmation concurrente en R</h1>
+        </section>
+
+        <section>
+          <h1><code>parallel</code></h1>
+          <ul>
+            <li>Package <code>parallel</code> dans la librairie standard</li>
+            <ul>
+              <li>Union de <code>snow</code> et de <code>multicore</code></li>
+            </ul>
+            <li class="column">Fourni des fonctions telles que</li>
+            <ul>
+              <li><code>stopCluster</code></li>
+              <li><code>detectCores</code></li>
+              <li><code>mclapply</code></li>
+              <li><code>parlapply</code></li>
+            </ul>
+          </ul>
+        </section>
+        <section>
+          <div class="r-stack">
+            <div class="fragment semi-fade-out" data-fragment-index="2">
+              <h1>Coeur physique vs coeur logique</h1>
+              <ul>
+                <li>Coeur physique $\Leftrightarrow$ objet physique</li>
+                <li>Coeur logique $\Leftrightarrow$ illusion OS</li>
+                <li>1 thread/coeur logique</li>
+                <li><em>Multithreading simulatané</em>: Utilisation des ressources innutilisées d'un coeur physique</li>
+                <li>Intel: <em>Hyperthreading</em></li>
+                <li><code>detectCores</code>: coeurs <em>logiques</em></li>
+              </ul>
+            </div>
+            <div class="fragment fade-in obox" data-fragment-index="2">
+              <h2>Laptop (x86_64)</h2>
+              <img style="display:block; margin: auto;"
+                src="assets/cores_i5.png"
+                alt="lscpu core i5"/>
+            </div>
+            <div class="fragment fade-in obox" data-fragment-index="3">
+              <h2>Raspberry pi 4 (arm)</h2>
+              <img style="display:block; margin: auto;"
+                src="assets/cores_pi4.png"
+                alt="lscpu arm cortex"/>
+            </div>
+          </div>
+        </section>
+        <section>
+        <h1>Exemple: <code>lmSlow</code>, <code>mclapply</code></h1>
+        <pre><code class="language-R hljs" data-trim data-noescape style="font-size:30px; line-height:1.25;">
+          lmSlow_mc <- function(m, ncores) {
+              parallel::mclapply(seq_len(m), \(k) {
+                  random_values <- rnorm(1e7)
+                  X <- matrix(random_values, ncol = 20)
+                  y <- rnorm(5e5)
+                  reg <- lm(y ~ X)
+                  coef(reg)
+              }, mc.cores = ncores)
+          }
+        </code></pre>
+        </section>
+        <section>
+          <h1><code>mclapply</code></h1>
+          <ul>
+            <li>Simple &#x1F603;</li>
+            <ul>
+              <li>Construction du cluster</li>
+              <li>Gestion des rngs </li>
+            </ul>
+            <li>POSIX seulement: pas de Windows &#x1F612;</li>
+            <li>Impossible de réutiliser un cluster &#x1F612;</li>
+          </ul>
+        </section>
+        <section>
+        <h1>Exemple: <code>lmSlow</code>, <code>parlapply</code></h1>
+        <pre><code class="language-R hljs" data-trim data-noescape style="font-size:23px; line-height:1.25;">
+          lmSlow_par <- function(m, ncores = parallel::detectCores()) {
+              cl <- parallel::makeCluster(ncores)
+
+              ret <- parallel::parLapply(cl, seq_len(m), \(k) {
+                  random_values <- rnorm(1e7)
+                  X <- matrix(random_values, ncol = 20)
+                  y <- rnorm(5e5)
+                  reg <- lm(y ~ X)
+                  coef(reg)
+              })
+
+              parallel::stopCluster(cl)
+              ret
+          }
+        </code></pre>
+        </section>
+        <section>
+          <h1>RNG en parallèle</h1>
+          <ul>
+            <li><code>mclapply</code> reproductible &#x1F603;</li>
+            <li><code>parLapply</code> non reproductible &#x1F612;</li>
+            <li>Solution: <code>parallel::clusterSetRNGStream</code></li>
+            <li>Utilise la méthode de l'Écuyer</li>
+          </ul>
+        </section>
+        <section>
+          <div class="r-stack">
+            <div class="fragment semi-fade-out" data-fragment-index="2">
+              <h1>Mise en place des travailleurs</h1>
+              <ul>
+                <li class="column">Opérations courantes</li>
+                <ul>
+                  <li>Attacher des packages</li>
+                  <li>Exposer des jeux de données</li>
+                </ul>
+                <li>Utiliser <code>parallel::clusterExport</code></li>
+              </ul>
+            </div>
+            <div class="fragment fade-in obox" data-fragment-index="2">
+            </div>
+          </div>
+        </section>
+      </section>
       </div>
     </div>
 
@@ -375,7 +413,7 @@
         <span class="separator"></span>
         MAT8186
         <span class="separator"></span>
-        Automne 2023
+        Automne 2024
     </p></div>
 
     <div id="qrcode" alt="Slides"></div>
@@ -390,7 +428,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="dist/perso.js"></script>
-    <script type="text/javascript">qrcode.makeCode("https://www.patrickfournier.ca/mat8186-cours7");</script>
+    <script type="text/javascript">qrcode.makeCode("https://ps-pat.github.io/mat8186-cours3");</script>
     <script>
       // More info about initialization & config:
       // - https://revealjs.com/initialization/
@@ -603,9 +641,16 @@
 
           backgroundTransition: 'zoom',
 
-          katex: {
-              local: "node_modules/katex"
-          }
+        katex: {
+          version: 'latest',
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true },
+          ],
+          ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        }
       });
     </script>
   </body>
